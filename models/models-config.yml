@@ -1,0 +1,7 @@
+models:
+  - name: tinyllama
+    path: ./tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf
+    type: ggml
+    context_size: 2048
+    tokenizer_type: llama
+    chat: true

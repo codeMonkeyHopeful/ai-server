@@ -1,0 +1,28 @@
+services:
+  localai:
+    image: quay.io/go-skynet/local-ai:latest
+    container_name: localai
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./models:/models:ro
+    command:
+      - run
+      - --models-config-file=/models/models-config.yml
+      - --address=0.0.0.0:8080
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.localai.rule=Host(`ai.ryan-jasinski.com`)"
+      - "traefik.http.routers.localai.entrypoints=web,websecure"
+      - "traefik.http.routers.localai.tls=true"
+      - "traefik.http.routers.localai.tls.certresolver=letsencrypt"
+      # Optional basic auth - uncomment if needed
+      #- "traefik.http.routers.localai.middlewares=localai-auth"
+      #- "traefik.http.middlewares.localai-auth.basicauth.users=neo:$$apr1$$J8qzvc15$$oZVUAdtOkhL1Fjtr51Ni1."
+      - "traefik.http.services.localai.loadbalancer.server.port=8080"
+
+networks:
+  web:
+    external: true
